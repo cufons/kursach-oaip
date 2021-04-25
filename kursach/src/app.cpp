@@ -42,17 +42,18 @@ void do_menu(menu_option* opts,unsigned entries,const char* title,abiturient*& a
 	cout << "-------------------------" << endl;
 	cout << ">";
 	unsigned selected_option;
-	scanf("%d",&selected_option);
+	cin >> selected_option;
+	//scanf("%d",&selected_option);
 	cout << "\033[2J\033[1;1H";
-	fflush(stdin);
+	//fflush(stdin);
 	if (selected_option < entries){
 		opts[selected_option].callback(arr,absize);
 	} else {
 		return;
 	}
 	cout << "Нажмите Enter для продолжения...";
-	getchar();
-	cin.ignore(3,'\n');
+	cin.get();
+	cin.ignore(1);
 }
 void exit_wrapper(abiturient*& arr,unsigned& size){
 	exit(0);

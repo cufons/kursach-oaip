@@ -3,6 +3,7 @@
 #ifndef PROCEDURES_H_
 #define PROCEDURES_H_
 #include <iostream>
+#include <fstream>
 #include <string.h>
 #include "util.h"
 typedef struct {

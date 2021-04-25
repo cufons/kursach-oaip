@@ -7,42 +7,25 @@ void data_load(abiturient*& arr, unsigned& size){
 	char filename[30];
 	cin >> filename;
 	cout << "Загрузка..." << endl;
-	FILE* datafile = fopen(filename,"r");
-	if (!datafile) {
+	std::ifstream datafile(filename,std::ifstream::in);
+	if (!datafile.is_open()) {
 		cout << "Что-то пошло не так" << endl;
 		return;
 	}
-	fseek(datafile,0,SEEK_END);
-	unsigned filesize = ftell(datafile);
-	rewind(datafile);
-	char* data = new char[filesize+10];
-	fread(data,1,filesize,datafile);
-	fclose(datafile);
-	data[filesize-1] = '\0';
-	char** token_data = &data;
-	char* token = strtok_r(data,"\n",token_data);
-	char** entry_data = &token;
-	// erase old data
-	free(arr);
+	delete[] arr;
 	size = 0;
-	while(token) {
+	while(datafile.good()) {
 		abiturient a;
-		char* entries[5];
-		entries[0] = strtok_r(token,", ",entry_data);
-		for(int i =1;i<5;i++) entries[i] = strtok_r(NULL,", ",entry_data);
-		strcpy(a.surname,entries[0]);
-		sscanf(entries[1],"%d",&a.birthyear);
-		sscanf(entries[2],"%f",&a.avgmark);
-		sscanf(entries[3],"%d",&a.ct_mark);
-		if(*entries[4] - 48) {
-			a.gender = abiturient::female;
-		} else {
-			a.gender = abiturient::male;
-		}
+		bool g;
+		datafile.get(a.surname,20,' ');
+		datafile >> a.birthyear >> a.avgmark >> a.ct_mark;
+		datafile >> g;
+		datafile.ignore();
+		a.gender = (abiturient::GenderInfo)g;
 		append((void**)&arr,size,sizeof(abiturient),&a);
-		token = strtok_r(NULL,"\n",token_data);
 	}
 	list_elems(arr, size); // required
+	datafile.close();
 }
 void append_entry(abiturient*& arr, unsigned& size){
 	abiturient a;
@@ -84,16 +67,26 @@ void data_dump(abiturient*& arr, unsigned& size){
 	char filename[30];
 	cin >> filename;
 	cout << "Загрузка..." << endl;
-	FILE* datafile = fopen(filename,"w+");
+	ofstream datafile(filename,ios::trunc | ios::out);
 	if (!datafile) {
 		cout << "Что-то пошло не так" << endl;
 		return;
 	}
-	for(unsigned i = 0; i < size; i++) {
+	for(unsigned i = 0; i < size-1; i++) {
 		abiturient* ab = arr + i;
-		fprintf(datafile,"%s, %d, %f, %d, %d\n",ab->surname,ab->birthyear,ab->avgmark,ab->ct_mark,ab->gender == abiturient::female);
+		datafile << ab->surname << " "
+				 << ab->birthyear << " "
+				 << ab->avgmark << " "
+				 << ab->ct_mark << " "
+				 << ab->gender << "\n";
 	}
-	fclose(datafile);
+	abiturient* ab = arr + size-1;
+	datafile << ab->surname << " "
+			 << ab->birthyear << " "
+			 << ab->avgmark << " "
+			 << ab->ct_mark << " "
+			 << ab->gender;
+	datafile.close();
 }
 void edit_entry(abiturient*& arr, unsigned& size){
 	unsigned to_edit;
