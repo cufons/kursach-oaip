@@ -24,8 +24,8 @@ void data_dump(abiturient*&  arr, unsigned& size);
 void edit_entry(abiturient*&  arr, unsigned& size);
 void delete_entry(abiturient*&  arr, unsigned& size);
 void delete_matching(abiturient*&  arr, unsigned& size);
-void replace_entry(abiturient*&  arr, unsigned& size); // TODO implement replacing
-void delete_entries(abiturient*&  arr, unsigned& size); // TODO implement multiple removal
+void replace_entry(abiturient*&  arr, unsigned& size);
+void delete_entries(abiturient*&  arr, unsigned& size);
 
 void set_match_year(bool& isinpfloat, ab_predicate& pred);
 void set_match_mark(bool& isinpfloat, ab_predicate& pred);

@@ -1,6 +1,7 @@
 
 #include "procedures.h"
 
+//TODO implement entries list on edit
 using namespace std;
 void data_load(abiturient*& arr, unsigned& size){
 	cout << "Введите имя файла, из которого нужно произвести ввод данных:";
@@ -90,9 +91,66 @@ void data_dump(abiturient*& arr, unsigned& size){
 }
 void edit_entry(abiturient*& arr, unsigned& size){
 	unsigned to_edit;
+	bool modified = false;
 	cout << "Введите ИД записи, которую нужно изменить:";
 	cin >> to_edit;
 	cout << endl;
+	if (to_edit >= size || cin.fail()) {
+		cout << "Неправильный ИД записи" << endl;
+		cin.clear();
+		return;
+	}
+	cin.ignore();
+	abiturient& edited = arr[to_edit];
+	cout << "Оставьте поле ввода пустым для сохранения исходного значения" << endl;
+	cout << "Введите фамилию [" << edited.surname << "]:";
+	char buf[30];
+	cin.get(buf,30);
+	if (strlen(buf)) {
+		strcpy(edited.surname,buf);
+		modified = true;
+	}
+	if(cin.fail()) cin.clear();
+	cin.ignore();
+	cout << endl;
+	cout << "Введите год рождения [" << edited.birthyear << "]:";
+	if(cin.peek() != '\n' || cin.fail()){
+		cin >> edited.birthyear;
+		modified = true;
+	} else {
+		cin.clear();
+	}
+	cin.ignore();
+	cout << endl;
+	cout << "Введите средний балл аттестата [" << edited.avgmark << "]:";
+	if (cin.peek() != '\n') {
+		cin >> edited.avgmark;
+		modified = true;
+	}else{
+		cin.clear();
+	}
+	cin.ignore();
+	cout << endl;
+	cout << "Введите балл ЦТ [" << edited.ct_mark << "]:";
+	if (cin.peek() != '\n') {
+		cin >> edited.ct_mark;
+		modified = true;
+	}else {
+		cin.clear();
+	}
+	cin.ignore();
+	cout << endl;
+	cout << "Введите пол абитуриента(0-мужской 1-женский) [" << edited.gender << "]:";
+	bool choice;
+	if(cin.peek() != '\n') {
+		cin >> choice;
+		edited.gender = (abiturient::GenderInfo)choice;
+		modified = true;
+	} else {
+		cin.clear();
+	}
+	cout << endl;
+	if(modified) list_elems(arr,size);
 }
 void delete_entry(abiturient*& arr, unsigned& size){
 	unsigned to_del;

@@ -2,7 +2,7 @@
 
 #include "app.h"
 using namespace std;
-
+#define CLEAR_SCREEN "\033[2J\033[1;1H"
 void kursapp() {
 	abiturient* abiturients = nullptr;
 	unsigned absize = 0;
@@ -32,7 +32,7 @@ void kursapp() {
 	while(true) do_menu(entries,10,title,abiturients,absize);
 }
 void do_menu(menu_option* opts,unsigned entries,const char* title,abiturient*& arr,unsigned &absize) {
-	cout << "\033[2J\033[1;1H";
+	cout << CLEAR_SCREEN;
 	cout << title << endl;
 	cout << "-------------------------" << endl;
 	for (unsigned i=0;i<entries;i++) {
@@ -43,8 +43,13 @@ void do_menu(menu_option* opts,unsigned entries,const char* title,abiturient*& a
 	cout << ">";
 	unsigned selected_option;
 	cin >> selected_option;
+	if (cin.fail()) {
+		cout << "Неправильный ввод" << endl;
+		cin.clear();
+		return;
+	}
 	//scanf("%d",&selected_option);
-	cout << "\033[2J\033[1;1H";
+	cout << CLEAR_SCREEN;
 	//fflush(stdin);
 	if (selected_option < entries){
 		opts[selected_option].callback(arr,absize);
