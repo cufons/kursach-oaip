@@ -6,13 +6,13 @@
 #include <fstream>
 #include <string.h>
 #include "util.h"
-typedef struct {
+struct abiturient{
 	char surname[20];
 	int birthyear;
 	float avgmark;
 	int ct_mark;
 	enum GenderInfo {male,female} gender;
-} abiturient;
+} ;
 union cval {int ival;float fval;};
 typedef bool (*ab_predicate)(abiturient&,cval,bool);
 

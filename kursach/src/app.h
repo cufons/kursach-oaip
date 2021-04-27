@@ -3,12 +3,12 @@
 #define APP_H_
 #include "procedures.h"
 
-typedef struct {
+struct menu_option {
     const char* label;
     void (*callback)(abiturient*&,unsigned&);
-}menu_option;
+};
 
-void kursapp();
+void databaseapp();
 void do_menu(menu_option* opts,unsigned entries,const char* title,abiturient*& arr,unsigned& absize);
 void exit_wrapper(abiturient*& arr,unsigned& size);
 

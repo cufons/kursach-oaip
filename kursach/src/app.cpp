@@ -3,7 +3,7 @@
 #include "app.h"
 using namespace std;
 #define CLEAR_SCREEN "\033[2J\033[1;1H"
-void kursapp() {
+void databaseapp() {
 	abiturient* abiturients = nullptr;
 	unsigned absize = 0;
 	setlocale(LC_ALL,"RU_ru");
