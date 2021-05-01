@@ -3,7 +3,6 @@
 
 void append(void** ptrr,unsigned &length,unsigned elemsize,const void* elem) {
 	length+=1;
-	//*ptrr = realloc(*ptrr,length*elemsize);
 	char* newptr = new char[elemsize*length];
 	memcpy(newptr,*ptrr,elemsize*(length-1));
 	delete[] *ptrr;
@@ -14,7 +13,6 @@ void append(void** ptrr,unsigned &length,unsigned elemsize,const void* elem) {
 void remove(void** ptrr,unsigned &length,unsigned elemsize,unsigned index) {
 	if (index > length-1) return;
 	if (length <= 1) {
-		//free(*ptrr);
 		delete[] *ptrr;
 		length = 0;
 		return;
@@ -24,5 +22,4 @@ void remove(void** ptrr,unsigned &length,unsigned elemsize,unsigned index) {
 	char* dest_addr = (char*)*ptrr + (index)*elemsize;
 	memcpy(dest_addr,src_addr,saved_elem_cnt*elemsize);
 	length-=1;
-	//*ptrr = realloc(*ptrr,length*elemsize);
 }

@@ -159,6 +159,7 @@ void delete_entry(abiturient*& arr, unsigned& size){
 	cout << endl;
 	if (to_del < size) {
 		remove((void**)&arr,size,sizeof(abiturient),to_del);
+		list_elems(arr,size);
 	} else {
 		cout << "Запрошенной записи не существует!" << endl;
 	}
@@ -249,6 +250,7 @@ void delete_entries(abiturient*& arr, unsigned& size){
 	for (unsigned i = idx2; i>=idx1 && i <= idx2;i--) {
 		remove((void**)&arr,size,sizeof(abiturient),i);
 	}
+	list_elems(arr,size);
 }
 
 bool year_pred(abiturient& ab, cval val,bool minmax){
@@ -259,14 +261,5 @@ bool mark_pred(abiturient& ab, cval val,bool minmax){
 }
 bool ct_pred(abiturient& ab, cval val,bool minmax) {
 	return minmax ? ab.ct_mark > val.ival : ab.ct_mark < val.ival;
-}
-void set_match_year(bool& isinpfloat, ab_predicate& pred){
-
-}
-void set_match_mark(bool& isinpfloat, ab_predicate& pred){
-
-}
-void set_match_ct(bool& isinpfloat, ab_predicate& pred){
-
 }
 

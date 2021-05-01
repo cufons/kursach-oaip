@@ -27,10 +27,6 @@ void delete_matching(abiturient*&  arr, unsigned& size);
 void replace_entry(abiturient*&  arr, unsigned& size);
 void delete_entries(abiturient*&  arr, unsigned& size);
 
-void set_match_year(bool& isinpfloat, ab_predicate& pred);
-void set_match_mark(bool& isinpfloat, ab_predicate& pred);
-void set_match_ct(bool& isinpfloat, ab_predicate& pred);
-
 bool year_pred(abiturient& ab, cval val,bool minmax);
 bool mark_pred(abiturient& ab, cval val,bool minmax);
 bool ct_pred(abiturient& ab, cval val,bool minmax);
