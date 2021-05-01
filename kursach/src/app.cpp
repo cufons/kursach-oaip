@@ -2,8 +2,8 @@
 
 #include "app.h"
 using namespace std;
-
-void kursapp() {
+#define CLEAR_SCREEN "\033[2J\033[1;1H"
+void databaseapp() {
 	abiturient* abiturients = nullptr;
 	unsigned absize = 0;
 	setlocale(LC_ALL,"RU_ru");
@@ -32,7 +32,7 @@ void kursapp() {
 	while(true) do_menu(entries,10,title,abiturients,absize);
 }
 void do_menu(menu_option* opts,unsigned entries,const char* title,abiturient*& arr,unsigned &absize) {
-	cout << "\033[2J\033[1;1H";
+	cout << CLEAR_SCREEN;
 	cout << title << endl;
 	cout << "-------------------------" << endl;
 	for (unsigned i=0;i<entries;i++) {
@@ -42,17 +42,23 @@ void do_menu(menu_option* opts,unsigned entries,const char* title,abiturient*& a
 	cout << "-------------------------" << endl;
 	cout << ">";
 	unsigned selected_option;
-	scanf("%d",&selected_option);
-	cout << "\033[2J\033[1;1H";
-	fflush(stdin);
+	cin >> selected_option;
+	if (cin.fail()) {
+		cout << "Неправильный ввод" << endl;
+		cin.clear();
+		return;
+	}
+	//scanf("%d",&selected_option);
+	cout << CLEAR_SCREEN;
+	//fflush(stdin);
 	if (selected_option < entries){
 		opts[selected_option].callback(arr,absize);
 	} else {
 		return;
 	}
 	cout << "Нажмите Enter для продолжения...";
-	getchar();
-	cin.ignore(3,'\n');
+	cin.get();
+	cin.ignore(1);
 }
 void exit_wrapper(abiturient*& arr,unsigned& size){
 	exit(0);

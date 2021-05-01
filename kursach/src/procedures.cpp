@@ -1,48 +1,32 @@
 
 #include "procedures.h"
 
+//TODO implement entries list on edit
 using namespace std;
 void data_load(abiturient*& arr, unsigned& size){
 	cout << "Введите имя файла, из которого нужно произвести ввод данных:";
 	char filename[30];
 	cin >> filename;
 	cout << "Загрузка..." << endl;
-	FILE* datafile = fopen(filename,"r");
-	if (!datafile) {
+	std::ifstream datafile(filename,std::ifstream::in);
+	if (!datafile.is_open()) {
 		cout << "Что-то пошло не так" << endl;
 		return;
 	}
-	fseek(datafile,0,SEEK_END);
-	unsigned filesize = ftell(datafile);
-	rewind(datafile);
-	char* data = new char[filesize+10];
-	fread(data,1,filesize,datafile);
-	fclose(datafile);
-	data[filesize-1] = '\0';
-	char** token_data = &data;
-	char* token = strtok_r(data,"\n",token_data);
-	char** entry_data = &token;
-	// erase old data
-	free(arr);
+	delete[] arr;
 	size = 0;
-	while(token) {
+	while(datafile.good()) {
 		abiturient a;
-		char* entries[5];
-		entries[0] = strtok_r(token,", ",entry_data);
-		for(int i =1;i<5;i++) entries[i] = strtok_r(NULL,", ",entry_data);
-		strcpy(a.surname,entries[0]);
-		sscanf(entries[1],"%d",&a.birthyear);
-		sscanf(entries[2],"%f",&a.avgmark);
-		sscanf(entries[3],"%d",&a.ct_mark);
-		if(*entries[4] - 48) {
-			a.gender = abiturient::female;
-		} else {
-			a.gender = abiturient::male;
-		}
+		bool g;
+		datafile.get(a.surname,20,' ');
+		datafile >> a.birthyear >> a.avgmark >> a.ct_mark;
+		datafile >> g;
+		datafile.ignore();
+		a.gender = (abiturient::GenderInfo)g;
 		append((void**)&arr,size,sizeof(abiturient),&a);
-		token = strtok_r(NULL,"\n",token_data);
 	}
 	list_elems(arr, size); // required
+	datafile.close();
 }
 void append_entry(abiturient*& arr, unsigned& size){
 	abiturient a;
@@ -84,22 +68,89 @@ void data_dump(abiturient*& arr, unsigned& size){
 	char filename[30];
 	cin >> filename;
 	cout << "Загрузка..." << endl;
-	FILE* datafile = fopen(filename,"w+");
+	ofstream datafile(filename,ios::trunc | ios::out);
 	if (!datafile) {
 		cout << "Что-то пошло не так" << endl;
 		return;
 	}
-	for(unsigned i = 0; i < size; i++) {
+	for(unsigned i = 0; i < size-1; i++) {
 		abiturient* ab = arr + i;
-		fprintf(datafile,"%s, %d, %f, %d, %d\n",ab->surname,ab->birthyear,ab->avgmark,ab->ct_mark,ab->gender == abiturient::female);
+		datafile << ab->surname << " "
+				 << ab->birthyear << " "
+				 << ab->avgmark << " "
+				 << ab->ct_mark << " "
+				 << ab->gender << "\n";
 	}
-	fclose(datafile);
+	abiturient* ab = arr + size-1;
+	datafile << ab->surname << " "
+			 << ab->birthyear << " "
+			 << ab->avgmark << " "
+			 << ab->ct_mark << " "
+			 << ab->gender;
+	datafile.close();
 }
 void edit_entry(abiturient*& arr, unsigned& size){
 	unsigned to_edit;
+	bool modified = false;
 	cout << "Введите ИД записи, которую нужно изменить:";
 	cin >> to_edit;
 	cout << endl;
+	if (to_edit >= size || cin.fail()) {
+		cout << "Неправильный ИД записи" << endl;
+		cin.clear();
+		return;
+	}
+	cin.ignore();
+	abiturient& edited = arr[to_edit];
+	cout << "Оставьте поле ввода пустым для сохранения исходного значения" << endl;
+	cout << "Введите фамилию [" << edited.surname << "]:";
+	char buf[30];
+	cin.get(buf,30);
+	if (strlen(buf)) {
+		strcpy(edited.surname,buf);
+		modified = true;
+	}
+	if(cin.fail()) cin.clear();
+	cin.ignore();
+	cout << endl;
+	cout << "Введите год рождения [" << edited.birthyear << "]:";
+	if(cin.peek() != '\n' || cin.fail()){
+		cin >> edited.birthyear;
+		modified = true;
+	} else {
+		cin.clear();
+	}
+	cin.ignore();
+	cout << endl;
+	cout << "Введите средний балл аттестата [" << edited.avgmark << "]:";
+	if (cin.peek() != '\n') {
+		cin >> edited.avgmark;
+		modified = true;
+	}else{
+		cin.clear();
+	}
+	cin.ignore();
+	cout << endl;
+	cout << "Введите балл ЦТ [" << edited.ct_mark << "]:";
+	if (cin.peek() != '\n') {
+		cin >> edited.ct_mark;
+		modified = true;
+	}else {
+		cin.clear();
+	}
+	cin.ignore();
+	cout << endl;
+	cout << "Введите пол абитуриента(0-мужской 1-женский) [" << edited.gender << "]:";
+	bool choice;
+	if(cin.peek() != '\n') {
+		cin >> choice;
+		edited.gender = (abiturient::GenderInfo)choice;
+		modified = true;
+	} else {
+		cin.clear();
+	}
+	cout << endl;
+	if(modified) list_elems(arr,size);
 }
 void delete_entry(abiturient*& arr, unsigned& size){
 	unsigned to_del;
